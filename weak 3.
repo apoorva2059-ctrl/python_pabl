@@ -1,0 +1,276 @@
+21.
+class Solution:
+    def maxWater(self, arr):
+        n = len(arr)
+        left, right = 0, n - 1
+        left_max, right_max = 0, 0
+        water = 0
+
+        while left < right:
+            if arr[left] <= arr[right]:
+                if arr[left] >= left_max:
+                    left_max = arr[left]
+                else:
+                    water += left_max - arr[left]
+                left += 1
+            else:
+                if arr[right] >= right_max:
+                    right_max = arr[right]
+                else:
+                    water += right_max - arr[right]
+                right -= 1
+
+        return water
+
+22.
+class Solution:
+    def hasTripletSum(self, arr, target):
+        n = len(arr)
+        arr.sort()
+
+        for i in range(n - 2):
+            left = i + 1
+            right = n - 1
+
+            while left < right:
+                curr_sum = arr[i] + arr[left] + arr[right]
+
+                if curr_sum == target:
+                    return True
+                elif curr_sum < target:
+                    left += 1
+                else:
+                    right -= 1
+
+        return False
+
+23.
+
+class Solution:
+    def findMinDiff(self, arr, M):
+        n = len(arr)
+        
+        # If students are more than packets
+        if M > n:
+            return 0
+        
+        # Sort the array
+        arr.sort()
+        
+        min_diff = float('inf')
+        
+        # Sliding window of size M
+        for i in range(n - M + 1):
+            diff = arr[i + M - 1] - arr[i]
+            min_diff = min(min_diff, diff)
+        
+        return min_diff
+
+24.
+
+class Solution:
+    def smallestSubWithSum(self, x, arr):
+        n = len(arr)
+        start = 0
+        curr_sum = 0
+        min_len = float('inf')
+        
+        for end in range(n):
+            curr_sum += arr[end]
+            
+            while curr_sum > x:
+                min_len = min(min_len, end - start + 1)
+                curr_sum -= arr[start]
+                start += 1
+        
+        return 0 if min_len == float('inf') else min_len
+
+25.
+
+class Solution:
+    def threeWayPartition(self, arr, a, b):
+        low = 0
+        mid = 0
+        high = len(arr) - 1
+        
+        while mid <= high:
+            if arr[mid] < a:
+                arr[low], arr[mid] = arr[mid], arr[low]
+                low += 1
+                mid += 1
+            elif arr[mid] > b:
+                arr[mid], arr[high] = arr[high], arr[mid]
+                high -= 1
+            else:
+                mid += 1
+        
+        return True
+
+26.
+
+import random
+
+class Solution:
+    def findMedian(self, arr):
+        
+        def quickselect(left, right, k):
+            if left == right:
+                return arr[left]
+            
+            pivot_index = random.randint(left, right)
+            pivot_index = partition(left, right, pivot_index)
+            
+            if k == pivot_index:
+                return arr[k]
+            elif k < pivot_index:
+                return quickselect(left, pivot_index - 1, k)
+            else:
+                return quickselect(pivot_index + 1, right, k)
+        
+        def partition(left, right, pivot_index):
+            pivot = arr[pivot_index]
+            arr[pivot_index], arr[right] = arr[right], arr[pivot_index]
+            
+            store_index = left
+            for i in range(left, right):
+                if arr[i] < pivot:
+                    arr[store_index], arr[i] = arr[i], arr[store_index]
+                    store_index += 1
+            
+            arr[right], arr[store_index] = arr[store_index], arr[right]
+            return store_index
+        
+        n = len(arr)
+        
+        if n % 2 == 1:
+            return quickselect(0, n - 1, n // 2)
+        else:
+            m1 = quickselect(0, n - 1, n // 2 - 1)
+            m2 = quickselect(0, n - 1, n // 2)
+            return (m1 + m2) / 2
+
+27.
+
+def isPalinArray(arr):
+    for num in arr:
+        original = num
+        rev = 0
+        
+        while num > 0:
+            rev = rev * 10 + num % 10
+            num //= 10
+        
+        if rev != original:
+            return False
+    
+    return True
+
+28.
+
+class Solution:
+    def spirallyTraverse(self, mat):
+        n = len(mat)
+        m = len(mat[0])
+        
+        top, bottom = 0, n - 1
+        left, right = 0, m - 1
+        
+        result = []
+        
+        while top <= bottom and left <= right:
+            
+            # Traverse top row
+            for i in range(left, right + 1):
+                result.append(mat[top][i])
+            top += 1
+            
+            # Traverse right column
+            for i in range(top, bottom + 1):
+                result.append(mat[i][right])
+            right -= 1
+            
+            # Traverse bottom row
+            if top <= bottom:
+                for i in range(right, left - 1, -1):
+                    result.append(mat[bottom][i])
+                bottom -= 1
+            
+            # Traverse left column
+            if left <= right:
+                for i in range(bottom, top - 1, -1):
+                    result.append(mat[i][left])
+                left += 1
+        
+        return result
+
+29.
+
+class Solution:
+    def searchMatrix(self, matrix, target):
+        if not matrix or not matrix[0]:
+            return False
+        
+        rows = len(matrix)
+        cols = len(matrix[0])
+        
+        low = 0
+        high = rows * cols - 1
+        
+        while low <= high:
+            mid = (low + high) // 2
+            r = mid // cols
+            c = mid % cols
+            
+            if matrix[r][c] == target:
+                return True
+            elif matrix[r][c] < target:
+                low = mid + 1
+            else:
+                high = mid-1
+        
+        return False
+
+30.
+
+class Solution:
+    def median(self, mat):
+        n = len(mat)
+        m = len(mat[0])
+        
+        # Find min and max elements
+        low = min(row[0] for row in mat)
+        high = max(row[m - 1] for row in mat)
+        
+        required = (n * m) // 2
+        
+        while low <= high:
+            mid = (low + high) // 2
+            count = 0
+            
+            # Count elements <= mid
+            for row in mat:
+                # Binary search in each row
+                l, r = 0, m
+                while l < r:
+                    mid_idx = (l + r) // 2
+                    if row[mid_idx] <= mid:
+                        l = mid_idx + 1
+                    else:
+                        r = mid_idx
+                count += l
+            
+            if count <= required:
+                low = mid + 1
+            else:
+                high = mid - 1
+        
+        return low
+
+
+
+        
+
+
+
+
+
